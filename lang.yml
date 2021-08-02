@@ -1,0 +1,148 @@
+# HumeBots/                    ____              _ 
+# | | | |_   _ _ __ ___   ___ / ___|___  _ __ __| |
+# | |_| | | | | '_ ` _ \ / _ \ |   / _ \| '__/ _` |
+# |  _  | |_| | | | | | |  __/ |__| (_) | | | (_| |
+# |_| |_|\__,_|_| |_| |_|\___|\____\___/|_|  \__,_|
+
+# This is the language configuration file for HumeCord.
+
+# -- EMOJIS --
+emoji:
+  success: "<:success:858193695005343744>"
+  warning: "<:warning:858193695034703892>"
+  error: "<:error:858193695086084136>"
+  minus: "<:minus:858193695215058945>"
+  unknown: "<:unknown:858193695164334110>"
+  loading: "<a:loading:862902359217930251>"
+
+  status_green: "<:status_green:858193695164334080>"
+  status_yellow: "<:status_yellow:858193694889082921>"
+  status_red: "<:status_red:858193695345868830>"
+
+  fontawesome: "<:fontawesome:858193694963793951>"
+  info: "<:info:858193695194349608>"
+  play: "<:play:858193695463440414>"
+  pause: "<:pause:858193695291342850>"
+  stop: "<:stop:858193695320047636>"
+  plus: "<:plus:858878662220054549>"
+
+  toggle_on: "<:toggle_on:858193695542738944>"
+  toggle_off: "<:toggle_off:858193695420317745>"
+
+  undo: "<:undo:858193695429623828>"
+  shuffle: "<:shuffle:858193695459508234>"
+  trash: "<:trash:858193695341543494>"
+  edit: "<:edit:859209194301685771>"
+
+error:
+  title: "An unexpected error occurred!"
+  description: "Details have been forwarded to the bot's developer. You may receive a DM from me if he needs more info on it. If you need to contact him about this error, please mention the exception ID below so he knows what to look for."
+  only_share_if_humecord: false
+  share_args: true
+  exception_details: "\n\n__ID__:  `%id%`\n__Details__:  `%ex%`"
+  thumbnail: null
+
+command_info:
+  # Valid placeholders:
+    # command, prefix (or p), syntax, description
+
+  title:
+    syntax_error: "Invalid syntax!"
+    info_message: "Usage information: %p%%command%"
+
+  description: "%description%\nSyntax: `%syntax%`"
+
+# !about response
+# Normal embed keys - all passed as kwargs.
+# Placeholders:
+  # %prefix%, %bot%, %version%, %humecord%, %owner%, 
+  # %support%, %invite%, %guide%
+# To eval some code, start the string with:
+  # eval::: 
+about_response:
+  home:
+    __button__:
+      style: primary
+      text: 🏠
+    title: I'm StatusReporter 👋
+
+    description: |
+      I'm the bundled debugging and monitoring bot for humeman's bot library, HumeCord.
+      
+      Created by %owner% using [HumeCord %humecord%](https://github.com/humeman/humecord).
+      I'm also open source! View the code [here](https://github.com/humeman/humecord-statusreporter).
+      
+      **If you need support, [join my discord server](%support%)!**
+
+    fields:
+      - name: My prefix
+        value: |
+          My prefix in this server is `%prefix%`.
+          Try running `%prefix%help` for a list of commands.
+  
+    color: invisible
+
+  other_bots:
+    __button__:
+      style: secondary
+      text: "My other bots"
+
+    title: My other bots 🤖
+
+    description: eval:::humecord.bot.config.globals.other_bots
+
+    color: invisible
+
+  humecord:
+    __button__:
+      style: secondary
+      text: HumeCord
+
+    title: HumeCord ⚙
+
+    description: |
+      I run on HumeCord, an advanced Discord bot framework written by humeman (me!)
+
+      I'm running on version %humecord%.
+
+      It's completely open source, and you can view or use the code on GitHub [by clicking here](https://github.com/humeman/humecord).
+
+    color: invisible
+
+  usage:
+    __button__:
+      style: secondary
+      text: Usage
+
+    title: Usage ℹ
+
+    description: |
+      Find a list of all the commands you can run with `%prefix%help`.
+
+      If you need any additional help, make sure to [join the HumeBots discord server](%support%)!
+
+  attributions:
+    __button__:
+      style: secondary
+      text: Attributions
+
+    title: Attributions 📜
+
+    description: |
+      This bot uses third party media from:
+
+    fields:
+      - name: → FontAwesome
+        value: Some emoji icons were created by [FontAwesome](https://fontawesome.com), and licensed under CC 4.0. FontAwesome does not endorse this bot in any way. You can view the license [here](https://fontawesome.com/license). Some icons are modified.
+
+# Available in create_embed (and by extension error()) in discordutils.
+# Expanded out with the string %-char%.
+# So, for example:
+#   embed_shortcuts:
+#     a: →
+#   create_embed():
+#     title = "%-a%"
+#     turns into: title = "→"
+embed_shortcuts:
+  a: →
+  b: •

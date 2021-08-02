@@ -1,0 +1,518 @@
+# HumeBots/                    ____              _ 
+# | | | |_   _ _ __ ___   ___ / ___|___  _ __ __| |
+# | |_| | | | | '_ ` _ \ / _ \ |   / _ \| '__/ _` |
+# |  _  | |_| | | | | | |  __/ |__| (_) | | | (_| |
+# |_| |_|\__,_|_| |_| |_|\___|\____\___/|_|  \__,_|
+
+# This is the bot configuration file for HumeCord.
+
+# -- Files --
+# The path to the global configuration file to be
+#   imported into Config.globals.
+globals_path: "../global/globals.yml"
+
+# If the API is enabled, this is the path to the
+#   endpoint config file.
+endpoint_path: "../global/endpoints.yml"
+
+# Language file path
+lang_path: "lang.yml"
+
+# Messages file path
+messages_path: "../global/messages.yml"
+
+
+# -- Startup --
+# The bot's memory storage registers on startup.
+mem_storage:
+  verification: {}
+  pending: {}
+  voice: {}
+  botreg: {}
+  evals: {}
+  message_cache: {}
+
+# Extra files to dump into the data directory
+#   through the file interface.
+req_files: 
+  "__statusreporter__.json":
+    status_messages: {}
+    stats_messages: {}
+    resources_messages: {}
+    bots: {}
+
+
+# -- Bot --
+name: statusreporter
+cool_name: StatusReporter
+version: 1.0.0
+
+# Bot name aliases
+# Other ways to reference your bot - particularly,
+#   conditional prefixes (scroll down). Keep lowercase.
+name_aliases:
+  - sr
+  - status
+  - s
+
+# Name of the bot's owner
+owner_name: humeman (Camden#5803)
+
+# Discord invite
+invite: ""
+
+# Guide page
+guide_page: ""
+
+# Support discord
+discord_server: https://discord.gg/nhaRXY28Yn
+
+# Discord token
+token: 
+
+# Default status
+default_status: "%online%/%total% | %stats|commands:day% commands today"
+default_visibility: online
+
+# Status placeholders - everything in the value is evaled
+# for the result, then turned into a string. For that reason,
+# make sure this has no possibility of executing user input.
+placeholders:
+  bot: humecord.bot.config.name
+  version: humecord.bot.config.version
+  discord: discord.__version__
+  humecord: humecord.version
+  username: humecord.bot.client.user.name
+  tag: f"{humecord.bot.client.user.name}#{humecord.bot.client.user.discriminator}"
+  guilds: len(humecord.bot.client.guilds)
+  members: sum([len(x.members) for x in humecord.bot.client.guilds])
+  uptime: humecord.utils.dateutils.get_duration(time.time() - humecord.bot.timer)
+  starttime: humecord.utils.dateutils.get_timestamp(humecord.bot.timer)
+
+# Visibilities - based on discord.py's internal enums.
+# Also evaled, so make sure this has no potential to execute
+# user input.
+visibilities:
+  online: discord.Status.online
+  offline: discord.Status.offline
+  idle: discord.Status.idle
+  dnd: discord.Status.dnd
+  invisible: discord.Status.invisible
+
+# Activities - ditto the above.
+activities:
+  playing: discord.ActivityType.playing
+  streaming: discord.ActivityType.streaming
+  listening: discord.ActivityType.listening
+  watching: discord.ActivityType.watching
+  competing: discord.ActivityType.competing
+
+# Intents to request from Discord.
+# Find valid intents at:
+# https://discordpy.readthedocs.io/en/stable/api.html#intents
+# List them, starting each intent with a "-", if you're going to
+#   individually specify intents, like so:
+# intents:
+#   - bans
+#   - dm_messages
+#   (...)
+# Alternatively, specify as a string:
+#   intents: all      # All intents
+#   intents: default  # Default set of intents
+#   intents: none     # No intents
+intents: all
+
+# -- API --
+# Enable or disable API support.
+use_api: true
+
+# URL - exclude trailing slash, include http/https
+api_url: http://localhost:5555
+
+# Authentication details.
+# Anything in this will be inserted into every API
+# call.
+auth:
+  key: ""
+
+# API category which this bot should use, when not
+# manually specified.
+self_api: statusreporter
+
+# Method to ping to check for API status
+online_route:
+  category: main
+  method: online
+
+# Method to send ready data to
+ready_route:
+  category: main
+  method: ready
+
+# Allow commands to override guild databases in
+# API calls
+allow_primary_override: false
+
+# -- Websocket --
+# Enable or disable websocket.   
+use_ws: True
+
+# Websocket URL
+ws_url: ws://localhost:5001
+
+# Websocket auth - passed as 'data' to an 'auth' event
+ws_auth: 
+  key: ""
+
+# -- Logging --
+logging:
+  log_requests: false
+  log_request_content: false
+  log_loops: true
+  log_start: true
+  log_stop: true
+  log_unhandled_errors: true
+  log_handled_errors: true
+  log_cache_info: true
+  log_commands: true
+  log_errored_requests: true
+  log_chatbots: true
+
+# Error reporting channel
+debug_channel: 
+
+# HumeCord changelogs
+# If enabled, whenever an update is pushed to HumeCord,
+#   it will be logged in your debug channel on first
+#   start with the update installed.
+send_changelogs: true
+
+# Humecord Terminal color set
+# 'border' is the box drawn around the terminal
+# 'info' is all the text, aside from the log box
+terminal_colors:
+  border: blue
+  info: cyan
+  secondary: dark_gray
+  terminal: green
+  response: cyan
+
+# Overrides the log color for logging types.
+# You can also add additional log types through this.
+log_colors:
+  start: green
+
+# Enable/disable line numbers at the start of terminal logs.
+line_numbers: true
+
+# Each command is called in the subprocess on start.
+# REALLY DANGEROUS. Be careful with the placeholders.
+# If anyone has the ability to edit the content of the
+# placeholders, they have access to do whatever they want
+# on your server.
+# Placeholders: %bot%, %version%, %humecord%
+# Eval code with eval:::
+start_calls:
+  #- toilet -f ascii9 --filter border:metal "%bot%"
+  - eval:::humecord.utils.logger.log("start", "Running %bot%[%version%] on HumeCord[%humecord%]")
+
+# -- Permissions --
+# Owner of the bot.
+# Overrides all permission checks and ratelimits.
+bot_owner: 337758812465528833
+
+# Permission to use debug console in debug channel and
+#   dev eval, dev exec, etc
+eval_perms:
+  - 337758812465528833
+
+# Permissions to be classified as a guild moderator.
+# If they have any of these, they're included.
+mod_perms:
+  - kick_members
+  - ban_members
+  - administrator
+  - manage_guild
+  - manage_messages
+  - manage_roles
+
+# -- Defaults --
+default_status: 
+  status: "%username% %version% | Ping me for info!"
+  visibility: online
+
+offline_status: 
+  status: "I'm offline right now: %reason%"
+  visibility: dnd
+
+api_error_status: 
+  status: "My API is offline right now! Check back soon."
+  visibility: dnd
+
+default_footer:
+  text: "%username% %version%"
+  image: ""
+
+defaults:
+  guild:
+    __populate__: guilds
+    prefix: "sr!"
+    permissions: {}
+    messages: {}
+    bot_disabled: false
+    music:
+      advanced_search: true
+      filters: {}
+    
+
+# Passed to each call as preferred_gdb.
+# Values always taken from the bot's own GDB - whether that's gdb or alternate_gdb.
+preferred_gdb:
+  - prefix
+
+# -- Loops --
+# Time to pause loop execution for when an
+#   exception occurs.
+loop_pause_time: 60
+
+
+# -- Time --
+# Timezone to use.
+timezone: America/Denver
+
+
+# -- Components --
+# Time after which components are removed from memory.
+component_expire_time: 60
+
+
+# -- Commands --
+# Command categories, used in !help.
+command_categories:
+  dev:
+    emoji: 🛠
+    name: Development
+    aliases:
+      - development
+    description: Development commands.
+
+  info:
+    emoji: ℹ
+    name: Information
+    aliases:
+      - information
+    description: Commands which give you more info about the bot.
+
+  config:
+    emoji: ⚙
+    name: Config
+    aliases:
+      - configuration
+    description: Commands which allow you to change how the bot works in your server.
+
+  control:
+    emoji: 🖥️
+    name: Control
+    aliases:
+      - manage
+    description: Commands which allow you to control the other bots.
+
+  status:
+    emoji: 🚦
+    name: Status
+    aliases: []
+    description: Commands which allow you to view the status of other bots.
+
+  stats:
+    emoji: 🔢
+    name: Stats
+    aliases:
+      - statistics
+    description: Commands which allow you to view global statistics.
+
+  music:
+    emoji: 🎵
+    name: Music
+    aliases: []
+    description: All music commands.
+
+# Number of commands to display on one !help page.
+commands_per_page: 5
+
+# Default commands
+# Current list:
+#   dev, about, help, overrides
+# Each command must have a __category__ key to specify
+#   the category to register to.
+# Anything else in the command's dict will override
+#   default attributes.
+default_commands:
+  about:
+    __category__: info
+  
+  help:
+    __category__: info
+
+  overrides:
+    __category__: config
+
+  settings:
+    __category__: config
+
+  messages:
+    __category__: config
+
+  exec:
+    __category__: dev
+
+  loops:
+    __category__: dev
+
+  dm:
+    __category__: dev
+
+  dev:
+    __category__: dev
+
+  profile:
+    __category__: dev
+
+  botban:
+    __category__: dev
+
+  useredit:
+    __category__: dev
+
+# Ratelimit groups
+# Can be used in command.ratelimit for ratelimit presets
+#   by setting to the name of the group.
+# Otherwise, just define a dict for each command.
+# Same as command.ratelimit - define a user group name,
+#   then a rate limit in seconds.
+ratelimit_groups:
+  default:
+    default: 3
+    vip: 1
+    awesome: 1
+    mod: 0
+    dev: 0
+  
+  medium:
+    default: 10
+    vip: 5
+    awesome: 3
+    mod: 1
+    dev: 0
+  
+  long:
+    default: 60
+    vip: 30
+    awesome: 20
+    mod: 10
+    dev: 0
+  
+  longest:
+    default: 600
+    vip: 180
+    awesome: 120
+    mod: 60
+    dev: 0
+
+# Default ratelimit
+# If no ratelimit is defined for a command, this is
+#   used instead.
+default_ratelimit: default
+
+# Universal prefixes
+# These are prefixes that, no matter what,
+# the bot will respond to.
+universal_prefixes:
+  - "humecord!"
+
+# Placeholder prefixes
+# These are conditional prefixes, which allow you to
+#   run commands for specific bots, all at once.
+# Only really useful if you have multiple bots.
+# Between each prefix's "start" and "end", you
+#   can specify a list of bots to activate
+#   separated by commas. If this bot's name is in
+#   that list, the command will fire.
+# So, for example:
+# - start: "hc!" end: "!"
+# and the command "hc!test,the!command"
+# will fire bots "test" and "the" for command "command".
+conditional_prefixes:
+  - start: "hc!"
+    end: "!"
+
+# Will embed through Embed.set_image().
+embeddable_media:
+  - png
+  - jpg
+  - jpeg
+  - webm
+  - gif
+
+# -- Settings --
+
+settings_categories:
+  general:
+    name: General
+    emoji: ⚙️
+    description: General settings which change how the bot functions.
+    aliases:
+      - main
+
+settings:
+  prefix:
+    in: gdb
+    path: prefix
+    validate: "str[len(1,5)]"
+    name: Prefix
+    description: The prefix used to run commands.
+    aliases: []
+    category: general
+    format:
+      str: "`%str%`"
+      null: "Not set (how???)"
+
+messages_default_category: dev
+
+# -- Music --
+# A shared path to an existing directory where all
+#   cached music downloads will be stored. Share
+#   between all your bots if possible.
+audio_directory: "/home/humecord/global/audio"
+max_duration: 3601
+search_opts: 5
+inactivity_timeout: 600
+
+
+# HumeBots/        _             _____                       _            
+#  / ____| |      | |           |  __ \                     | |           
+# | (___ | |_ __ _| |_ _   _ ___| |__) |___ _ __   ___  _ __| |_ ___ _ __ 
+#  \___ \| __/ _` | __| | | / __|  _  // _ \ '_ \ / _ \| '__| __/ _ \ '__|
+#  ____) | || (_| | |_| |_| \__ \ | \ \  __/ |_) | (_) | |  | ||  __/ |   
+# |_____/ \__\__,_|\__|\__,_|___/_|  \_\___| .__/ \___/|_|   \__\___|_|   
+#                                          | |                            
+#                                          |_|                     (timy) 
+# Configuration
+
+sr_resources_channel: 
+sr_status_channel: 
+sr_stats_channel: 
+
+sr_bots:
+  statusreporter:
+    aliases: [sr, stat]
+    channel: 1
+
+sr_tmux:
+  bots:
+    statusreporter: 
+      start: null
+      aliases: [sr, stat, statusreporter, tim]
+
+sr_categories:
+  bots:
+    - statusreporter
