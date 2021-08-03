@@ -54,6 +54,11 @@ class Imports:
                     "imp": "from loops import update_stats",
                     "module": "update_stats",
                     "class": "UpdateStatsLoop"
+                },
+                {
+                    "imp": "from loops import update_resources",
+                    "module": "update_resources",
+                    "class": "UpdateResourcesLoop"
                 }
             ]
         }

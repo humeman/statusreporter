@@ -35,9 +35,49 @@ class HCOnWSResponse:
         if action != "send_offline":
             return
 
-        # Get the command
-        action = data["action"]
+        # Get the bot
+        name = data["bot"]
 
-        bot = data["data"]["bot"]
+        if not data["error"]:
+            # Connection closed with status 1000 or 1001. Carry on.
+            #return
+            pass
 
-        humecord.terminal.log(f"helo,,, bot {bot}'s has offline,, please fix It right now", True)
+        # Get bot from API
+        data = await bot.api.get(
+            "status",
+            "bot",
+            {
+                "bot": name
+            }
+        )
+
+        # Check if the bot has properly shut down
+        if data["online"]:
+            # Improper shutdown. Send an alert.
+            if name in bot.config.sr_bots:
+                channel = bot.client.get_channel(bot.config.sr_bots[name]["channel"])
+
+            else:
+                channel = bot.debug_channel
+
+            await channel.send(
+                ", ".join([f"<@{x}>" for x in bot.config.sr_offline_mentions]),
+                embed = discordutils.create_embed(
+                    f"{bot.config.lang['emoji']['error']}  {name} has shut down improperly.",
+                    color = "error"
+                )
+            )
+
+            # Tell the API to set them to offline
+            await bot.api.put(
+                "status",
+                "override",
+                {
+                    "bot": name,
+                    "changes": {
+                        "online": False,
+                        "error": True
+                    }
+                }
+            )

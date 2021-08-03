@@ -516,3 +516,6 @@ sr_tmux:
 sr_categories:
   bots:
     - statusreporter
+
+sr_offline_mentions:
+  - 337758812465528833

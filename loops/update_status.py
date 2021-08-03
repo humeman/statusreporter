@@ -48,9 +48,15 @@ class UpdateStatusLoop:
                     )
 
                 else:
+                    if status["error"]:
+                        ext = "\n*Shut down improperly.*"
+
+                    else:
+                        ext = ""
+
                     embed = discordutils.create_embed(
                         profile = [status["details"]["cool_name"], status["details"]["avatar"]],
-                        description = f"Offline since `{dateutils.get_timestamp(status['last_ping'])}` (`{dateutils.dateutils.get_duration(time.time() - status['last_ping'])}` ago)",
+                        description = f"Offline since `{dateutils.get_timestamp(status['last_ping'])}` (`{dateutils.get_duration(time.time() - status['last_ping'])}` ago){ext}",
                         color = "error"
                     )
                 

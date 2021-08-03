@@ -42,19 +42,28 @@ class UpdateStatsLoop:
 
                 for name, stats in data.items():
                     details = [
-                        f"%-b% __Commands today:__ {miscutils.friendly_number(stats['commands']['day']['count'])}",
-                        f"%-b% __Total commands:__ {miscutils.friendly_number(stats['commands']['total'])}",
+                        f"__Commands__",
+                        f"%-b% Today: {miscutils.friendly_number(stats['commands']['day']['count'])}",
+                        f"%-b% Total: {miscutils.friendly_number(stats['commands']['total'])}",
                         " "
                     ]
 
+                    uptime_header = f"__Uptime__"
+
                     if stats["uptime"]["month"]["month"] is not None:
+                        if len(details) == 4:
+                            details.append(uptime_header)
+
                         details.append(
-                            f"%-b% __Monthly uptime:__ {round((stats['uptime']['month']['count'] / (time.time() - stats['uptime']['month']['start'])) * 100, 1)}%"
+                            f"%-b% Monthly: {round((stats['uptime']['month']['count'] / (time.time() - stats['uptime']['month']['start'])) * 100, 1)}%"
                         )
                     
                     if stats["uptime"]["total"]["start"] is not None:
+                        if len(details) == 4:
+                            details.append(uptime_header)
+
                         details.append(
-                            f"%-b% __Total uptime:__ {round((stats['uptime']['total']['count'] / (time.time() - stats['uptime']['total']['start'])) * 100, 1)}%"
+                            f"%-b% Total: {round((stats['uptime']['total']['count'] / (time.time() - stats['uptime']['total']['start'])) * 100, 1)}%"
                         )
 
                     if details[-1] != " ":
@@ -68,14 +77,16 @@ class UpdateStatsLoop:
                         }
                     )
 
-                embed = discordutils.create_embed(
-                    "Bot statistics",
-                    fields = fields
-                )
+                embeds = [
+                    discordutils.create_embed(
+                        "Bot statistics",
+                        fields = fields
+                    )
+                ]
 
             elif mtype == "api":
                 fields = []
-                for name, count in {**data["categories"], "total": data["total"]}.items():
+                for name, count in data["categories"].items():
                     name = name[0].upper() + name[1:]
 
                     if count["fail"] > 0 and count["success"] > 0:
@@ -95,11 +106,18 @@ class UpdateStatsLoop:
                         }
                     )
 
-                embed = discordutils.create_embed(
-                    "Requests this hour",
-                    fields = fields,
-                    footer = f"Tracking since {dateutils.get_timestamp(data['current'] * 3600)}"
-                )
+                embeds = [
+                    discordutils.create_embed(
+                        "Requests",
+                        description = f"__Succeeded:__ {miscutils.friendly_number(data['total']['success'])}\n__Failed:__ {miscutils.friendly_number(data['total']['fail'])}",
+                        footer = f"Tracking since the API's creation."
+                    ),
+                    discordutils.create_embed(
+                        "Requests this hour",
+                        fields = fields,
+                        footer = f"Tracking since {dateutils.get_timestamp(data['current'] * 3600)}."
+                    )
+                ]
 
             if mtype not in bot.files.files["__statusreporter__.json"]["stats_messages"]:
                 bot.files.files["__statusreporter__.json"]["stats_messages"][mtype] = None
@@ -131,7 +149,7 @@ class UpdateStatsLoop:
                 # Generate a new message
                 try:
                     msg = await channel.send(
-                        embed = embed
+                        embeds = embeds
                     )
 
                 except:
@@ -144,7 +162,7 @@ class UpdateStatsLoop:
             if edit:
                 try:
                     await msg.edit(
-                        embed = embed
+                        embeds = embeds
                     )
 
                 except:
